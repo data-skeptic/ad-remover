@@ -47,7 +47,7 @@ SPLIT_INTERVAL = 3
 ######################################################################
 # the limit of distance to get matched poitns
 # after fast DTW algorithm implements
-DISTANCE_LIMIT = 2500
+DISTANCE_LIMIT = 3000
 
 ######################################################################
 # minimum distance points list
@@ -146,35 +146,45 @@ def _match(thread_id, src, dest, cmp_width, start_ms, unit_ms, plot=False):
     t_pairs = []  # time list of consecutive values
     is_consecutive = False
     distance_list = []
-    for i in range(0, len(src)):
-        temp = []
-
-        # compare source and split fingerprints
-        # by extracting same size of values as splitter
-        for j in range(cmp_width):
-            if i + j > len(src) - 1:
-                break
-            for k in range(len(src[i + j])):
-                temp.append([j, src[i + j][k]])
-
-        if len(temp) == 0:  # if no matched values are given
-            continue
-
-        # calculate euclidean distance based on fast DTW algorithm
-        distance, path = fastdtw(dest, temp, dist=euclidean)
-        distance_list.append(distance)
-        if distance < DISTANCE_LIMIT:
-            is_consecutive = True
-            d_pairs.append(distance)
-            t_pairs.append(start_ms + i * unit_ms)
+    half_of_cpm_width = cmp_width // 4
+    sub_routine = 0
+    cur_index = 0
+    for i in range(0, len(src), half_of_cpm_width):
+        if i + half_of_cpm_width < len(src):
+            sub_routine = half_of_cpm_width
         else:
-            # add consecutive values in the same list
-            # e.g. [[[da1, da2], [ta1, ta2]], [[db1, db2], [tb1, tb2]], ...]
-            if is_consecutive:
-                is_consecutive = False
-                dist_pairs.append([d_pairs, t_pairs])
-                d_pairs = []
-                t_pairs = []
+            sub_routine = len(src) - 1 - i
+        for m in range(sub_routine):
+            cur_index = i + m
+            temp = []
+
+            # compare source and split fingerprints
+            # by extracting same size of values as splitter
+            for j in range(cmp_width):
+                if cur_index + j > len(src) - 1:
+                    break
+                for k in range(len(src[cur_index + j])):
+                    temp.append([j, src[cur_index + j][k]])
+
+            if len(temp) == 0:  # if no matched values are given
+                continue
+
+            # calculate euclidean distance based on fast DTW algorithm
+            distance, path = fastdtw(dest, temp, dist=euclidean)
+            distance_list.append(distance)
+            if distance < DISTANCE_LIMIT:
+                is_consecutive = True
+                d_pairs.append(distance)
+                t_pairs.append(start_ms + cur_index * unit_ms)
+            else:
+                # add consecutive values in the same list
+                # e.g. [[[da1, da2], [ta1, ta2]], [[db1, db2], [tb1, tb2]], ...]
+                if is_consecutive:
+                    is_consecutive = False
+                    dist_pairs.append([d_pairs, t_pairs])
+                    d_pairs = []
+                    t_pairs = []
+                break
 
     # get min distance and time among consecutive values
     # add them ret list
