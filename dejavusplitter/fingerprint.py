@@ -149,6 +149,10 @@ def _match(thread_id, src, dest, cmp_width, start_ms, unit_ms, plot=False):
     half_of_cpm_width = cmp_width // 4
     sub_routine = 0
     cur_index = 0
+
+    # to speed up, it tries to match by the step of the quarter of clip length
+    # because distance gets smaller near the matching part
+    # at the other parts, it doesn't check one by one, skips them
     for i in range(0, len(src), half_of_cpm_width):
         if i + half_of_cpm_width < len(src):
             sub_routine = half_of_cpm_width
