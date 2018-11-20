@@ -6,9 +6,9 @@ class DejavuSplitter:
 
     def __init__(self):
         print('init...')
-        self.maxima_series = []     # maxima pattern of split audio
-        self.stop_points = []       # the point list which are below distance limitation
-        self.length = 0             # the duration of source audio file
+        self.maxima_series = []  # maxima pattern of split audio
+        self.stop_points = []  # the point list which are below distance limitation
+        self.length = 0  # the duration of source audio file
 
     def fingerprint_file(self, file):
         """
@@ -18,7 +18,13 @@ class DejavuSplitter:
         """
 
         self.maxima_series = fingerprint(file)
+
+        if not self.maxima_series:
+            return False
+
         print('maxima_series:', self.maxima_series)
+
+        return True
 
     def recognize_file(self, file):
         """
@@ -29,18 +35,30 @@ class DejavuSplitter:
         """
 
         self.stop_points, self.length = recognize(file, self.maxima_series)
+
+        if not self.stop_points:
+            return False
+
         print('stop_points:', self.stop_points, ', length:', self.length)
+
+        return True
 
     def split(self, src, splitter):
         print('splitter audio fingerprinting...')
         st1 = time.time()
-        self.fingerprint_file(splitter)
+        ff = self.fingerprint_file(splitter)
         print('fingerprint time:', time.time() - st1, '(s)')
+
+        if not ff:
+            return False
 
         print('source audio fingerprinting...')
         st1 = time.time()
-        self.recognize_file(src)
+        rf = self.recognize_file(src)
         print('recognition time:', time.time() - st1, '(s)')
+
+        if not rf:
+            return False
 
         print('splitting audio file...')
         st1 = time.time()
@@ -56,8 +74,8 @@ class DejavuSplitter:
         """
 
         ext_index = str(file).rindex('.')
-        file_name = file[:ext_index]            # get the file name from the full path
-        extension = file[ext_index + 1:]        # get the extension from the full path
+        file_name = file[:ext_index]  # get the file name from the full path
+        extension = file[ext_index + 1:]  # get the extension from the full path
 
         # extract time of all matched points
         time_series = [int(row[1] / 1000) for row in self.stop_points]
