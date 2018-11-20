@@ -76,6 +76,10 @@ def fingerprint(file):
     """
 
     cvt_file = convert_to_wav(file)
+
+    if not cvt_file:
+        return False
+
     sound = AudioSegment.from_wav(cvt_file)
     return _fingerprint(np.fromstring(sound.raw_data, np.int16))
 
@@ -97,6 +101,10 @@ def recognize(file, dest):
 
     # convert source audio into the mono wav file
     cvt_file = convert_to_wav(file)
+
+    if not cvt_file:
+        return False, False
+
     sound = AudioSegment.from_wav(cvt_file)
 
     threads = []
@@ -299,6 +307,11 @@ def convert_to_wav(file):
     :param file: input file
     :return: converted file name
     """
+
+    if not os.path.exists(file):
+        print('No such input file...')
+        print('Invalid path: {}'.format(file))
+        return False
 
     converted_file = 'temp.wav'
 
