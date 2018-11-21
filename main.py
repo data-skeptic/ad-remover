@@ -12,6 +12,7 @@ def main(src, splitter):
     splitter = os.path.join(SPLITTER_PATH, splitter)
 
     djv = DejavuSplitter()
+
     djv.split(src, splitter)
 
 

@@ -312,6 +312,8 @@ def convert_to_wav(file):
         print('No such input file...')
         print('Invalid path: {}'.format(file))
         return False
+    else:
+        print('Input file exists.')
 
     converted_file = 'temp.wav'
 
@@ -327,5 +329,11 @@ def convert_to_wav(file):
         print('convert is done...')
     except:
         print('raised exception while converting...')
+
+    if not os.path.exists(converted_file):
+        print('No temp.wav file...')
+        return False
+    else:
+        print('temp.wav file exists.')
 
     return converted_file
