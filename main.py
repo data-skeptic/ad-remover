@@ -2,7 +2,7 @@ import os
 
 from dejavusplitter.dejavusplitter import DejavuSplitter
 
-BASE_PATH = r'res'
+BASE_PATH = 'res'
 SOURCE_PATH = os.path.join(BASE_PATH, 'source')
 SPLITTER_PATH = os.path.join(BASE_PATH, 'splitter')
 
