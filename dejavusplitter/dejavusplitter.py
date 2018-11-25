@@ -45,6 +45,7 @@ class DejavuSplitter:
 
     def split(self, src, splitter):
         print('splitter audio fingerprinting...')
+
         st1 = time.time()
         ff = self.fingerprint_file(splitter)
         print('fingerprint time:', time.time() - st1, '(s)')
@@ -53,6 +54,7 @@ class DejavuSplitter:
             return False
 
         print('source audio fingerprinting...')
+
         st1 = time.time()
         rf = self.recognize_file(src)
         print('recognition time:', time.time() - st1, '(s)')
