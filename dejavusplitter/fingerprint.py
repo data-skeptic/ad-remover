@@ -322,13 +322,11 @@ def convert_to_wav(file):
 
     # audio code: PCM, channel: 1, frame rate: 44.1k
     cmd = 'ffmpeg -i {} -acodec pcm_s16le -ac 1 -ar {} {}'.format(file, DEFAULT_FS, converted_file)
+    print(cmd)
 
-    try:
-        proc = subprocess.Popen(cmd)
-        proc.communicate()
-        print('convert is done...')
-    except:
-        print('raised exception while converting...')
+    proc = subprocess.Popen(cmd, shell=True)
+    proc.communicate()
+    print('convert is done...')
 
     if not os.path.exists(converted_file):
         print('No temp.wav file...')
