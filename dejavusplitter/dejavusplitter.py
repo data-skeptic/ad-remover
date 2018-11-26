@@ -86,17 +86,17 @@ class DejavuSplitter:
 
         # split the source audio
         for i in range(1, len(time_series)):
-            cmd = 'ffmpeg -ss {} -i {} -to {} -c copy {}_{}.{}'.format(time_series[i - 1], file,
-                                                                       time_series[i], file_name, i,
-                                                                       extension)
+            print('from', time_series[i - 1], 'to', time_series[i])
 
-            try:
-                proc = subprocess.Popen(cmd, shell=True)
-                proc.communicate()
-                print('convert is done...')
-            except:
-                print('raised exception while converting...')
+            cmd = 'ffmpeg -i {} -acodec copy -ss {} -to {} {}_{}.{}'.format(file, time_series[i - 1], time_series[i],
+                                                                            file_name, i, extension)
 
-        # remove temp file
-        if os.path.exists('temp.wav'):
-            os.remove('temp.wav')
+            print(cmd)
+
+            proc = subprocess.Popen(cmd, shell=True)
+            proc.communicate()
+            print('convert is done...')
+
+    # remove temp file
+    if os.path.exists('temp.wav'):
+        os.remove('temp.wav')

@@ -11,6 +11,8 @@ def main(src, splitter):
     src = os.path.join(SOURCE_PATH, src)
     splitter = os.path.join(SPLITTER_PATH, splitter)
 
+    print(src)
+
     djv = DejavuSplitter()
 
     djv.split(src, splitter)
