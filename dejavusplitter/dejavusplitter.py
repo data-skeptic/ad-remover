@@ -91,7 +91,7 @@ class DejavuSplitter:
                                                                        extension)
 
             try:
-                proc = subprocess.Popen(cmd)
+                proc = subprocess.Popen(cmd, shell=True)
                 proc.communicate()
                 print('convert is done...')
             except:
