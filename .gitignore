@@ -1,2 +1,7 @@
+.ipynb_checkpoints/
+*.pyc
+*.mp3
+*.sh
+sandbox.ipynb
 .DS_Store
 
